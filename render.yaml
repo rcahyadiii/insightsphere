@@ -1,21 +1,52 @@
+# Render Blueprint — auto-provision Postgres + Redis + API dalam 1 Apply.
+# Region singapore = paling dekat untuk pengguna Indonesia (latency rendah).
+# Catatan free tier:
+#   - Postgres free EXPIRES setelah 30 hari (cukup untuk staging/demo).
+#   - Web service free "sleep" setelah 15 menit idle (cold start ~30 detik).
+#   - Key Value (Redis) free = 25 MB.
+
+databases:
+  - name: insightsphere-db
+    plan: free
+    region: singapore
+    databaseName: pos_cerdas_db
+    user: insightsphere
+
 services:
+  # ---- Redis / Key Value (broker Celery + cache) ----
+  - type: keyvalue
+    name: insightsphere-redis
+    plan: free
+    region: singapore
+    ipAllowList: []            # kosong = hanya koneksi internal antar service Render
+    maxmemoryPolicy: noeviction # jangan buang task Celery saat memori penuh
+
+  # ---- Backend FastAPI ----
   - type: web
     name: insightsphere-api-staging
     env: docker
     plan: free
+    region: singapore
     rootDir: backend
     dockerfilePath: ./Dockerfile
     healthCheckPath: /health
     envVars:
       - key: APP_ENV
         value: staging
+      # DATABASE_URL & REDIS_URL di-inject otomatis dari resource di atas —
+      # tidak perlu copy-paste connection string manual.
       - key: DATABASE_URL
-        sync: false
-      - key: SECRET_KEY
-        sync: false
+        fromDatabase:
+          name: insightsphere-db
+          property: connectionString
       - key: REDIS_URL
-        sync: false
+        fromService:
+          type: keyvalue
+          name: insightsphere-redis
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true     # Render generate string acak aman (>32 char)
       - key: FRONTEND_URL
-        sync: false
+        sync: false             # ISI MANUAL = URL Vercel Anda (untuk CORS)
       - key: ANALYTICS_INTERVAL_SECONDS
         value: ""
