@@ -17,11 +17,12 @@ def create_initial_admin():
         
         existing = service.get_user_by_username(db, admin_username)
         if existing:
-            print(f"User '{admin_username}' already exists. Updating to admin role...")
-            setattr(existing, "role", ROLE_ADMIN)
-            setattr(existing, "pin_hash", service.get_pin_hash(admin_pass))
-            db.commit()
-            print("[SUCCESS] User updated to Admin")
+            # Idempotent: JANGAN reset pin kalau user sudah ada. Penting karena
+            # start.sh memanggil script ini tiap boot, dan Render free tier
+            # sering restart setelah sleep — kalau di-reset, pin admin akan
+            # balik ke default terus-menerus.
+            print(f"User '{admin_username}' sudah ada — dilewati (pin tidak diubah).")
+            return
         else:
             print(f"Creating new Admin user: {admin_username}...")
             new_admin = models.User(

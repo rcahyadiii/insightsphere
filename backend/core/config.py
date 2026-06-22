@@ -57,6 +57,14 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def apply_environment_guardrails(self):
+        # Normalisasi scheme Postgres SEBELUM validasi/dipakai. Render/Heroku
+        # kadang menyuplai `postgres://`, sedangkan SQLAlchemy 2.0 (engine app
+        # maupun Alembic) hanya menerima alias `postgresql://`.
+        if self.DATABASE_URL.startswith("postgres://"):
+            self.DATABASE_URL = self.DATABASE_URL.replace(
+                "postgres://", "postgresql://", 1
+            )
+
         is_production = self.APP_ENV.strip().lower() in PRODUCTION_ENV_VALUES
 
         if not is_production:

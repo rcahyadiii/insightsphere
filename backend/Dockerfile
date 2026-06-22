@@ -20,5 +20,6 @@ COPY . .
 
 EXPOSE 8000
 
-# Render mengatur PORT secara otomatis; fallback ke 8000 untuk local docker run
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# Render mengatur PORT secara otomatis; fallback ke 8000 untuk local docker run.
+# start.sh menjalankan migrasi + bootstrap admin sebelum start uvicorn.
+CMD ["sh", "start.sh"]
