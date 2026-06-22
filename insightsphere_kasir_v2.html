@@ -1,0 +1,315 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap');
+  :root {
+    --slate-900: #0f172a;
+    --slate-800: #1e293b;
+    --slate-700: #334155;
+    --slate-600: #475569;
+    --slate-400: #94a3b8;
+    --slate-200: #e2e8f0;
+    --emerald: #10b981;
+    --emerald-dim: rgba(16,185,129,0.12);
+    --emerald-border: rgba(16,185,129,0.35);
+    --rose: #f43f5e;
+    --rose-dim: rgba(244,63,94,0.12);
+    --rose-border: rgba(244,63,94,0.35);
+    --amber: #f59e0b;
+    --amber-dim: rgba(245,158,11,0.12);
+    --amber-border: rgba(245,158,11,0.35);
+    --border: rgba(255,255,255,0.07);
+    --border-md: rgba(255,255,255,0.12);
+    --r-card: 24px;
+    --r-btn: 12px;
+    --r-chip: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .pos-wrap { font-family: 'Inter', sans-serif; background: var(--slate-900); min-height: 620px; border-radius: var(--r-card); overflow: hidden; border: 1px solid var(--border-md); }
+  .pos-header { background: var(--slate-800); border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; }
+  .logo-wrap { display: flex; align-items: center; gap: 10px; }
+  .logo-mark { width: 28px; height: 28px; border-radius: 8px; background: var(--emerald); display: flex; align-items: center; justify-content: center; }
+  .logo-mark svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; }
+  .logo-name { font-size: 15px; font-weight: 600; color: #f8fafc; letter-spacing: -0.3px; }
+  .logo-sub { font-size: 12px; color: var(--slate-400); font-weight: 400; margin-left: 6px; }
+  .header-tabs { display: flex; gap: 4px; background: var(--slate-900); border-radius: 10px; padding: 3px; border: 1px solid var(--border); }
+  .htab { padding: 5px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; background: transparent; color: var(--slate-400); font-family: 'Inter', sans-serif; transition: all 0.15s; }
+  .htab.active { background: var(--emerald); color: #fff; }
+  .htab:not(.active):hover { color: #f8fafc; }
+  .role-badge { display: flex; align-items: center; gap: 6px; background: var(--slate-900); border: 1px solid var(--border-md); border-radius: 99px; padding: 4px 12px 4px 8px; }
+  .role-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--emerald); box-shadow: 0 0 6px var(--emerald); }
+  .role-text { font-size: 12px; color: var(--slate-400); font-weight: 500; }
+
+  .pos-body { display: flex; height: 556px; }
+
+  .panel-left { flex: 1; display: flex; flex-direction: column; border-right: 1px solid var(--border); min-width: 0; }
+  .search-wrap { padding: 12px 16px; background: var(--slate-800); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  .search-icon { color: var(--slate-400); font-size: 14px; flex-shrink: 0; }
+  .search-in { flex: 1; background: var(--slate-900); border: 1px solid var(--border-md); border-radius: 10px; padding: 7px 12px; font-size: 13px; color: #f8fafc; font-family: 'Inter', sans-serif; outline: none; transition: border 0.15s; }
+  .search-in:focus { border-color: var(--emerald); }
+  .search-in::placeholder { color: var(--slate-600); }
+  .cat-row { display: flex; gap: 6px; padding: 10px 16px; overflow-x: auto; background: var(--slate-800); border-bottom: 1px solid var(--border); scrollbar-width: none; flex-shrink: 0; }
+  .cat-row::-webkit-scrollbar { display: none; }
+  .cat-chip { padding: 5px 14px; border-radius: 99px; font-size: 12px; font-weight: 500; cursor: pointer; border: 1px solid var(--border-md); color: var(--slate-400); background: transparent; font-family: 'Inter', sans-serif; white-space: nowrap; transition: all 0.15s; }
+  .cat-chip.active { background: var(--emerald-dim); border-color: var(--emerald-border); color: var(--emerald); }
+  .cat-chip:not(.active):hover { border-color: var(--border-md); color: #f8fafc; background: rgba(255,255,255,0.04); }
+  .prod-grid { flex: 1; overflow-y: auto; padding: 12px 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; align-content: start; scrollbar-width: thin; scrollbar-color: var(--slate-700) transparent; }
+  .prod-card { background: var(--slate-800); border: 1px solid var(--border); border-radius: var(--r-card); padding: 12px 8px 10px; cursor: pointer; text-align: center; transition: all 0.15s; user-select: none; }
+  .prod-card:hover { border-color: var(--emerald-border); background: rgba(16,185,129,0.06); transform: translateY(-1px); }
+  .prod-card:active { transform: scale(0.96); }
+  .prod-card.out-stock { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+  .p-icon { font-size: 24px; margin-bottom: 6px; }
+  .p-name { font-size: 11px; font-weight: 500; color: #f8fafc; margin-bottom: 4px; line-height: 1.4; }
+  .p-price { font-size: 11px; color: var(--emerald); font-family: 'Fira Code', monospace; font-weight: 500; }
+  .p-stk { font-size: 10px; color: var(--slate-600); margin-top: 3px; }
+
+  .panel-right { width: 248px; display: flex; flex-direction: column; background: var(--slate-800); flex-shrink: 0; }
+  .cart-head { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .cart-label { font-size: 13px; font-weight: 600; color: #f8fafc; }
+  .cart-meta { font-size: 11px; color: var(--slate-400); margin-top: 1px; }
+  .clr-btn { font-size: 11px; color: var(--rose); background: none; border: none; cursor: pointer; font-family: 'Inter', sans-serif; font-weight: 500; }
+  .cart-items { flex: 1; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--slate-700) transparent; }
+  .cart-empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 8px; }
+  .cart-empty-state .ce-icon { width: 40px; height: 40px; border-radius: 12px; background: var(--slate-700); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .cart-empty-state .ce-txt { font-size: 12px; color: var(--slate-600); }
+  .c-item { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  .ci-name { font-size: 12px; font-weight: 500; color: #f8fafc; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ci-row { display: flex; align-items: center; justify-content: space-between; }
+  .qty-wrap { display: flex; align-items: center; gap: 6px; }
+  .qb { width: 22px; height: 22px; border-radius: 6px; border: 1px solid var(--border-md); background: var(--slate-700); cursor: pointer; font-size: 14px; color: #f8fafc; display: flex; align-items: center; justify-content: center; transition: all 0.1s; font-family: 'Inter', sans-serif; }
+  .qb:hover { background: var(--slate-600); border-color: var(--border-md); }
+  .qnum { font-size: 12px; font-weight: 600; color: #f8fafc; min-width: 20px; text-align: center; font-family: 'Fira Code', monospace; }
+  .ci-sub { font-size: 11px; font-family: 'Fira Code', monospace; color: var(--slate-400); }
+  .del-x { background: none; border: none; cursor: pointer; color: var(--slate-600); font-size: 16px; padding: 0; display: flex; align-items: center; transition: color 0.1s; }
+  .del-x:hover { color: var(--rose); }
+  .cart-foot { padding: 12px 16px; border-top: 1px solid var(--border); background: var(--slate-900); border-radius: 0 0 0 0; }
+  .sum-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--slate-400); margin-bottom: 4px; }
+  .sum-row span:last-child { font-family: 'Fira Code', monospace; }
+  .sum-divider { height: 1px; background: var(--border); margin: 8px 0; }
+  .sum-total { display: flex; justify-content: space-between; font-size: 15px; font-weight: 600; color: #f8fafc; margin-bottom: 12px; }
+  .sum-total span:last-child { font-family: 'Fira Code', monospace; color: var(--emerald); }
+  .pay-btn { width: 100%; padding: 12px; background: var(--emerald); color: #fff; border: none; border-radius: var(--r-btn); font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.15s; letter-spacing: -0.2px; }
+  .pay-btn:hover:not([disabled]) { background: #0ea572; }
+  .pay-btn[disabled] { opacity: 0.3; cursor: not-allowed; }
+
+  .stock-panel { flex: 1; display: flex; flex-direction: column; }
+  .stock-list-inner { flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; scrollbar-width: thin; }
+  .s-card { background: var(--slate-800); border: 1px solid var(--border); border-radius: var(--r-card); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+  .s-name { font-size: 13px; font-weight: 500; color: #f8fafc; }
+  .s-cat { font-size: 11px; color: var(--slate-500); margin-top: 2px; }
+  .s-right { text-align: right; }
+  .s-qty { font-size: 12px; font-family: 'Fira Code', monospace; color: var(--slate-400); margin-bottom: 5px; }
+  .sbadge { font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 99px; letter-spacing: 0.3px; display: inline-block; }
+  .sb-aman { background: var(--emerald-dim); border: 1px solid var(--emerald-border); color: var(--emerald); }
+  .sb-menipis { background: var(--amber-dim); border: 1px solid var(--amber-border); color: var(--amber); }
+  .sb-habis { background: var(--rose-dim); border: 1px solid var(--rose-border); color: var(--rose); }
+
+  .ov { position: absolute; inset: 0; background: rgba(0,0,0,0.65); border-radius: var(--r-card); display: flex; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+  .mbox { background: var(--slate-800); border: 1px solid var(--border-md); border-radius: var(--r-card); padding: 24px; width: 300px; }
+  .mbox-title { font-size: 15px; font-weight: 600; color: #f8fafc; margin-bottom: 18px; letter-spacing: -0.3px; }
+  .meth-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+  .mcard { padding: 14px 10px; border: 1.5px solid var(--border-md); border-radius: var(--r-btn); cursor: pointer; text-align: center; background: var(--slate-900); transition: all 0.15s; }
+  .mcard.sel { border-color: var(--emerald); background: var(--emerald-dim); }
+  .mcard .mc-icon { font-size: 22px; margin-bottom: 6px; }
+  .mcard .mc-lbl { font-size: 13px; font-weight: 600; color: #f8fafc; }
+  .fl { font-size: 11px; color: var(--slate-400); margin-bottom: 6px; font-weight: 500; }
+  .fin { width: 100%; padding: 10px 12px; border: 1px solid var(--border-md); border-radius: var(--r-chip); font-size: 14px; color: #f8fafc; background: var(--slate-900); font-family: 'Fira Code', monospace; margin-bottom: 12px; outline: none; transition: border 0.15s; }
+  .fin:focus { border-color: var(--emerald); }
+  .fin::placeholder { color: var(--slate-600); }
+  .km-row { background: var(--slate-900); border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border: 1px solid var(--border); }
+  .km-l { font-size: 12px; color: var(--slate-400); font-weight: 500; }
+  .km-v { font-size: 14px; font-family: 'Fira Code', monospace; font-weight: 500; color: #f8fafc; }
+  .km-v.err { color: var(--rose); }
+  .m-btns { display: flex; gap: 8px; }
+  .mbtn-cancel { flex: 1; padding: 10px; border: 1px solid var(--border-md); border-radius: var(--r-btn); background: transparent; font-size: 13px; cursor: pointer; color: var(--slate-400); font-family: 'Inter', sans-serif; font-weight: 500; }
+  .mbtn-cancel:hover { background: rgba(255,255,255,0.05); }
+  .mbtn-ok { flex: 2; padding: 10px; border: none; border-radius: var(--r-btn); background: var(--emerald); color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.15s; }
+  .mbtn-ok:hover:not([disabled]) { background: #0ea572; }
+  .mbtn-ok[disabled] { opacity: 0.35; cursor: not-allowed; }
+  .total-strip { background: var(--slate-900); border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border: 1px solid var(--border); }
+  .ts-l { font-size: 12px; color: var(--slate-400); }
+  .ts-v { font-size: 16px; font-family: 'Fira Code', monospace; font-weight: 600; color: var(--emerald); }
+  .qris-frame { border: 1.5px dashed var(--border-md); border-radius: 16px; padding: 18px; text-align: center; margin-bottom: 14px; background: var(--slate-900); }
+  .qr-grid { display: grid; grid-template-columns: repeat(9, 1fr); gap: 2px; width: 80px; margin: 0 auto 8px; }
+  .qrc { height: 7px; border-radius: 1px; }
+  .qr-lbl { font-size: 11px; color: var(--slate-400); }
+  .suc-box { text-align: center; padding: 8px 0; }
+  .suc-circle { width: 60px; height: 60px; border-radius: 50%; background: var(--emerald-dim); border: 2px solid var(--emerald-border); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+  .suc-check { font-size: 28px; }
+  .suc-t { font-size: 16px; font-weight: 600; color: #f8fafc; margin-bottom: 4px; }
+  .suc-s { font-size: 12px; color: var(--slate-400); margin-bottom: 16px; font-family: 'Fira Code', monospace; }
+</style>
+
+<div id="app" style="position:relative;"></div>
+
+<script>
+const P = [
+  {id:1,n:'Fotokopi A4',c:'Fotokopi',p:200,s:500,e:'📄'},
+  {id:2,n:'Fotokopi A3',c:'Fotokopi',p:400,s:200,e:'📋'},
+  {id:3,n:'Fotokopi F4',c:'Fotokopi',p:250,s:150,e:'📃'},
+  {id:4,n:'Bolak-balik A4',c:'Fotokopi',p:350,s:300,e:'🔄'},
+  {id:5,n:'Print BW A4',c:'Print',p:500,s:8,e:'🖨️'},
+  {id:6,n:'Print Warna A4',c:'Print',p:1500,s:0,e:'🎨'},
+  {id:7,n:'Print Foto 4R',c:'Print',p:3000,s:50,e:'📷'},
+  {id:8,n:'Print A3 BW',c:'Print',p:1000,s:30,e:'🗒️'},
+  {id:9,n:'Scan Dokumen',c:'Scan',p:2000,s:99,e:'📡'},
+  {id:10,n:'Jilid Spiral',c:'Jilid',p:8000,s:3,e:'📚'},
+  {id:11,n:'Jilid Panas',c:'Jilid',p:10000,s:25,e:'🔥'},
+  {id:12,n:'Laminating A4',c:'Lainnya',p:5000,s:40,e:'✨'},
+];
+const CATS = ['Semua','Fotokopi','Print','Scan','Jilid','Lainnya'];
+let st = { tab:'pos', cat:'Semua', q:'', cart:[], modal:false, meth:'tunai', ud:'', ok:false };
+
+const fmt = n => 'Rp\u00a0' + n.toLocaleString('id-ID');
+const total = () => st.cart.reduce((a,i)=>a+i.p*i.qty,0);
+const cnt = () => st.cart.reduce((a,i)=>a+i.qty,0);
+const km = () => Math.max(0,(parseInt(st.ud)||0)-total());
+const canPay = () => st.meth==='qris' || (parseInt(st.ud)||0)>=total();
+const badge = s => s===0?['sb-habis','Habis']:s<=5?['sb-menipis','Menipis']:['sb-aman','Aman'];
+
+function addP(p){ const x=st.cart.find(i=>i.id===p.id); if(x){x.qty=Math.min(x.qty+1,p.s);}else{st.cart.push({...p,qty:1});} R(); }
+function cqty(id,d){ const x=st.cart.find(i=>i.id===id); if(!x)return; x.qty+=d; if(x.qty<=0)st.cart=st.cart.filter(i=>i.id!==id); R(); }
+function del(id){ st.cart=st.cart.filter(i=>i.id!==id); R(); }
+function pay(){ st.ok=true; R(); setTimeout(()=>{st.cart=[];st.modal=false;st.ok=false;st.ud='';R();},2100); }
+
+function qrGrid(){
+  const pat=[];
+  for(let r=0;r<9;r++) for(let c=0;c<9;c++){
+    const corner=(r<3&&c<3)||(r<3&&c>5)||(r>5&&c<3);
+    const edge=((r===0||r===2)&&c<3)||((r===0||r===2)&&c>5)||((r>5)&&(r===6||r===8)&&c<3)||((c===0||c===2)&&r<3)||((c===6||c===8)&&r<3)||((c===0||c===2)&&r>5);
+    const fill=corner||edge||(r===1&&c===1)||(r===1&&c===7)||(r===7&&c===1)||Math.random()>0.5;
+    pat.push(fill);
+  }
+  return pat.map(v=>`<div class="qrc" style="background:${v?'#f8fafc':'transparent'}"></div>`).join('');
+}
+
+function R(){
+  const prods = P.filter(p=>(st.cat==='Semua'||p.c===st.cat)&&p.n.toLowerCase().includes(st.q.toLowerCase()));
+  const t=total(),c=cnt(),ud=parseInt(st.ud)||0;
+
+  const prodHtml = prods.map(p=>`
+    <div class="prod-card${p.s===0?' out-stock':''}" onclick="addP(P.find(x=>x.id===${p.id}))">
+      <div class="p-icon">${p.e}</div>
+      <div class="p-name">${p.n}</div>
+      <div class="p-price">${fmt(p.p)}</div>
+      <div class="p-stk">${p.s===0?'Habis':'stk:'+p.s}</div>
+    </div>`).join('') || `<div style="grid-column:1/-1;text-align:center;color:var(--slate-600);font-size:13px;padding:24px">Tidak ditemukan</div>`;
+
+  const cartHtml = st.cart.length===0
+    ? `<div class="cart-empty-state"><div class="ce-icon">🛒</div><div class="ce-txt">Keranjang masih kosong</div></div>`
+    : st.cart.map(i=>`<div class="c-item">
+        <div class="ci-name">${i.e} ${i.n}</div>
+        <div class="ci-row">
+          <div class="qty-wrap">
+            <button class="qb" onclick="cqty(${i.id},-1)">−</button>
+            <span class="qnum">${i.qty}</span>
+            <button class="qb" onclick="cqty(${i.id},1)">+</button>
+          </div>
+          <span class="ci-sub">${fmt(i.p*i.qty)}</span>
+          <button class="del-x" onclick="del(${i.id})">×</button>
+        </div>
+      </div>`).join('');
+
+  let modal='';
+  if(st.modal){
+    if(st.ok){
+      modal=`<div class="ov"><div class="mbox"><div class="suc-box">
+        <div class="suc-circle"><div class="suc-check">✓</div></div>
+        <div class="suc-t">Transaksi Berhasil</div>
+        <div class="suc-s">${st.meth==='qris'?'QRIS':'Tunai'} · kembalian ${fmt(Math.max(0,ud-t))}</div>
+        <div style="font-size:12px;color:var(--slate-600)">Mereset keranjang...</div>
+      </div></div></div>`;
+    } else if(st.meth==='qris'){
+      modal=`<div class="ov"><div class="mbox">
+        <div class="mbox-title">Bayar via QRIS</div>
+        <div class="total-strip"><span class="ts-l">Total Tagihan</span><span class="ts-v">${fmt(t)}</span></div>
+        <div class="qris-frame">
+          <div class="qr-grid">${qrGrid()}</div>
+          <div class="qr-lbl">Scan untuk membayar</div>
+        </div>
+        <div class="m-btns">
+          <button class="mbtn-cancel" onclick="st.modal=false;st.meth='tunai';R()">Batal</button>
+          <button class="mbtn-ok" onclick="pay()">Konfirmasi Lunas</button>
+        </div>
+      </div></div>`;
+    } else {
+      modal=`<div class="ov"><div class="mbox">
+        <div class="mbox-title">Proses Pembayaran</div>
+        <div class="meth-grid">
+          <div class="mcard${st.meth==='tunai'?' sel':''}" onclick="st.meth='tunai';R()"><div class="mc-icon">💵</div><div class="mc-lbl">Tunai</div></div>
+          <div class="mcard${st.meth==='qris'?' sel':''}" onclick="st.meth='qris';R()"><div class="mc-icon">📱</div><div class="mc-lbl">QRIS</div></div>
+        </div>
+        <div class="total-strip"><span class="ts-l">Total Tagihan</span><span class="ts-v">${fmt(t)}</span></div>
+        <div class="fl">Uang Diterima</div>
+        <input class="fin" type="text" placeholder="0" value="${st.ud}" oninput="st.ud=this.value.replace(/\\D/g,'');R()" />
+        <div class="km-row">
+          <span class="km-l">Kembalian</span>
+          <span class="km-v${ud>0&&ud<t?' err':''}">${ud>0&&ud<t?'− '+fmt(t-ud):fmt(km())}</span>
+        </div>
+        <div class="m-btns">
+          <button class="mbtn-cancel" onclick="st.modal=false;st.ud='';R()">Batal</button>
+          <button class="mbtn-ok" ${canPay()?'':'disabled'} onclick="pay()">Proses Bayar</button>
+        </div>
+      </div></div>`;
+    }
+  }
+
+  const stockHtml = P.filter(p=>p.n.toLowerCase().includes(st.q.toLowerCase())).map(p=>{
+    const [bc,bl]=badge(p.s);
+    return `<div class="s-card">
+      <div><div class="s-name">${p.e} ${p.n}</div><div class="s-cat">${p.c}</div></div>
+      <div class="s-right"><div class="s-qty">stk: ${p.s}</div><span class="sbadge ${bc}">${bl}</span></div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('app').innerHTML = `
+  <div class="pos-wrap" style="position:relative">
+    <div class="pos-header">
+      <div class="logo-wrap">
+        <div class="logo-mark"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="5"/><path d="M8 5v3l2 2"/></svg></div>
+        <span class="logo-name">InsightSphere<span class="logo-sub">Kasir</span></span>
+      </div>
+      <div class="header-tabs">
+        <button class="htab${st.tab==='pos'?' active':''}" onclick="st.tab='pos';R()">POS Transaksi</button>
+        <button class="htab${st.tab==='stock'?' active':''}" onclick="st.tab='stock';R()">Cek Stok</button>
+      </div>
+      <div class="role-badge"><div class="role-dot"></div><span class="role-text">Online · Kasir</span></div>
+    </div>
+    <div class="pos-body">
+      ${st.tab==='pos'?`
+      <div class="panel-left">
+        <div class="search-wrap">
+          <span class="search-icon">⌕</span>
+          <input class="search-in" placeholder="Cari produk atau layanan..." value="${st.q}" oninput="st.q=this.value;R()" />
+        </div>
+        <div class="cat-row">${CATS.map(x=>`<button class="cat-chip${st.cat===x?' active':''}" onclick="st.cat='${x}';R()">${x}</button>`).join('')}</div>
+        <div class="prod-grid">${prodHtml}</div>
+      </div>
+      <div class="panel-right">
+        <div class="cart-head">
+          <div><div class="cart-label">Keranjang</div>${c>0?`<div class="cart-meta">${c} item dipilih</div>`:''}</div>
+          ${c>0?`<button class="clr-btn" onclick="st.cart=[];R()">Hapus semua</button>`:''}
+        </div>
+        <div class="cart-items">${cartHtml}</div>
+        <div class="cart-foot">
+          <div class="sum-row"><span>Subtotal</span><span>${fmt(t)}</span></div>
+          <div class="sum-row"><span>Jumlah item</span><span>${c} pcs</span></div>
+          <div class="sum-divider"></div>
+          <div class="sum-total"><span>Total</span><span>${fmt(t)}</span></div>
+          <button class="pay-btn" ${c===0?'disabled':''} onclick="st.modal=true;R()">Bayar Sekarang →</button>
+        </div>
+      </div>
+      `:
+      `<div class="stock-panel">
+        <div class="search-wrap">
+          <span class="search-icon">⌕</span>
+          <input class="search-in" placeholder="Cari produk..." value="${st.q}" oninput="st.q=this.value;R()" />
+        </div>
+        <div class="stock-list-inner">${stockHtml}</div>
+      </div>`}
+    </div>
+    ${modal}
+  </div>`;
+}
+R();
+</script>

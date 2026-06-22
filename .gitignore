@@ -1,0 +1,75 @@
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+!frontend/.env.local.example
+
+# Dependency folders
+node_modules/
+frontend/node_modules/
+.venv/
+venv/
+
+# Build and framework output
+.next/
+frontend/.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+frontend/next-env.d.ts
+
+# Python caches and test output
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage/
+
+# Runtime logs and generated artifacts
+*.log
+typecheck_output.txt
+frontend/.next-dev*.log
+backend/.uvicorn-dev*.log
+backend/system_api.log
+output/
+frontend/output/
+backend/output/
+.playwright-cli/
+frontend/.playwright-cli/
+.superpowers/
+.git-migration-backup/
+
+# Local data and large datasets
+pgdata/
+store-sales-time-series-forecasting/
+SuperMarket Analysis.csv/
+*.sqlite
+*.db
+
+# Local-only tooling
+SKILL/
+.vscode/
+.windsurf/
+tmp_*.js
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+*.pem
+# Pytest temp dirs (sandbox/agent runs) — sering tersisa locked dari tmp_path
+pytest-cache-files-*/
+
+# Root npm lockfile stub (workspace lock ada di frontend/package-lock.json)
+/package-lock.json
+
+# Frontend test artifacts (Playwright + node:test scratch)
+frontend/test-output.txt
+frontend/test-results/
+frontend/playwright-report/
+
+# Agentic run logs
+.run-logs/
+frontend/.run-logs/

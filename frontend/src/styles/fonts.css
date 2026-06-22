@@ -1,0 +1,10 @@
+/* Offline font stacks.
+   Keep these variables in CSS so production builds do not depend on Google Fonts. */
+@layer base {
+  :root {
+    --font-inter: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --font-fira-code: "Fira Code", "Cascadia Code", Consolas, "SFMono-Regular", monospace;
+    --font-sans: var(--font-inter);
+    --font-mono: var(--font-fira-code);
+  }
+}

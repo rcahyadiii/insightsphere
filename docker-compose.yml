@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: pos_cerdas_db_container
+    restart: always # Docker otomatis menyalakan ulang service jika mati/PC mati
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password_sangat_rahasia # Sangat disarankan ganti via .env asli!
+      POSTGRES_DB: pos_cerdas_db
+    ports:
+      - "5434:5432" 
+    volumes:
+      # Local Path : Container Path => Data PostgreSQL tidak akan hilang saat layanan mati
+      - ./pgdata:/var/lib/postgresql/data
+      
+  redis:
+    image: redis:7-alpine
+    container_name: pos_cerdas_redis_container
+    restart: always
+    ports:
+      - "6379:6379"
+
+  api:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pos_cerdas_api_container
+    restart: always
+    env_file:
+      - .env # Tarik env vars (seperti DATABASE_URL)
+    environment:
+      # Pengecualian pada docker khusus ini (menimpa default .env.example agar sinkron dgn nama server DB)
+      # Host harus "db" (merujuk pada nama layanan database di atas), bkn localhost !
+      - DATABASE_URL=postgresql://postgres:postgres_password_sangat_rahasia@db:5432/pos_cerdas_db
+      - REDIS_URL=redis://redis:6379/0
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - "./SuperMarket Analysis.csv:/SuperMarket Analysis.csv"
+      - "./backend:/app"
+      - "./mlops:/app/mlops" # Mount mlops module ke dalam path container API
+      
+  celery_worker:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pos_cerdas_celery_worker
+    restart: always
+    command: celery -A core.celery_app worker --loglevel=info
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres_password_sangat_rahasia@db:5432/pos_cerdas_db
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - "./backend:/app"

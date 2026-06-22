@@ -1,0 +1,25 @@
+FROM python:3.10-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Tambahkan dependensi sistem jika diperlukan (untuk psycopg2, dll)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir pydantic-settings psycopg2-binary uvicorn fastapi
+
+COPY . .
+
+# Hugging Face menggunakan port 7860 secara default
+EXPOSE 7860
+
+# Jalankan monitor script yang akan menyalakan Worker + Scheduler
+CMD ["python", "worker_hf.py"]

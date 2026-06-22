@@ -1,0 +1,75 @@
+#!/usr/bin/env sh
+# InsightSphere pre-commit gate
+#
+# Native git hook (tanpa husky) — aktif setelah `git config core.hooksPath .githooks`.
+# Skip dengan `git commit --no-verify` saat WIP, namun jangan jadi default.
+#
+# Cek diff berbasis staged-only supaya hook cepat:
+#   - frontend (.ts/.tsx) staged → `npm --prefix frontend run typecheck`
+#   - backend (.py) staged → ruff (kalau tersedia) + smoke pytest cepat
+# Tidak ada autoformat — hook ini gate, bukan fixer.
+set -e
+
+STAGED=$(git diff --cached --name-only --diff-filter=ACMR)
+if [ -z "$STAGED" ]; then
+  exit 0
+fi
+
+has_match() {
+  printf "%s\n" "$STAGED" | grep -E "$1" >/dev/null 2>&1
+}
+
+FAIL=0
+
+if has_match "^frontend/.*\.(ts|tsx|mts|cts)$"; then
+  echo "[pre-commit] frontend changes detected — running tsc --noEmit"
+  if ! (cd frontend && npm run --silent typecheck); then
+    echo "[pre-commit] FAIL: frontend typecheck"
+    FAIL=1
+  fi
+fi
+
+if has_match "^backend/.*\.py$"; then
+  echo "[pre-commit] backend changes detected"
+  if [ -x ".venv/Scripts/ruff.exe" ]; then
+    echo "[pre-commit] running ruff check (backend only)"
+    if ! .venv/Scripts/ruff.exe check backend; then
+      echo "[pre-commit] FAIL: ruff check"
+      FAIL=1
+    fi
+  elif [ -x ".venv/bin/ruff" ]; then
+    if ! .venv/bin/ruff check backend; then
+      echo "[pre-commit] FAIL: ruff check"
+      FAIL=1
+    fi
+  else
+    echo "[pre-commit] ruff not installed — skipping (run: .venv/Scripts/pip install -r backend/requirements-dev.txt)"
+  fi
+
+  if [ -x ".venv/Scripts/python.exe" ]; then
+    echo "[pre-commit] running pytest smoke (config + redis dev guard + mirror unit)"
+    if ! .venv/Scripts/python.exe -m pytest backend/tests/test_p0_config_hardening.py backend/tests/test_p2_logging_and_migrations.py backend/tests/test_p6_redis_dev_guard.py backend/tests/domains/test_identity_mirror.py -q --no-header; then
+      echo "[pre-commit] FAIL: pytest smoke"
+      FAIL=1
+    fi
+  else
+    echo "[pre-commit] .venv/Scripts/python.exe not found — skipping pytest"
+  fi
+fi
+
+if has_match "^frontend/(src|app|tests)/.*\.(ts|tsx|mts|cts|mjs)$"; then
+  echo "[pre-commit] running frontend node:test integration audit (subset)"
+  if ! (cd frontend && node --experimental-strip-types --test --test-isolation=none tests/integration/*.test.mjs >/dev/null 2>&1); then
+    echo "[pre-commit] FAIL: frontend node:test"
+    FAIL=1
+  fi
+fi
+
+if [ "$FAIL" -ne 0 ]; then
+  echo ""
+  echo "[pre-commit] commit BLOCKED. Skip dengan `git commit --no-verify` hanya jika sangat perlu."
+  exit 1
+fi
+
+echo "[pre-commit] OK"
+exit 0
